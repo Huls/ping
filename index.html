@@ -1,0 +1,132 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas time</title>
+    <style>
+        #canvas {
+            display: block;
+            width: 800px;
+            height: 400px;
+            background: black;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="400"></canvas>
+    <script>
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d'); //ball
+        var ctxPosX = 290; //ball position X
+        var ctxPosY = 190; //ball position Y
+        var rectW = 15;    //ball width
+        var rectH = 15;    //ball height
+        var posX = 7;      //ball speed X
+        var posY = 7;      //ball speed Y
+        var pOneScore = 0; //player score counter
+        var pTwoScore = 0; //player score counter
+        var playerOnePosX = 20; //playerOne position X
+        var playerOnePosY = 20; //playerOne position Y
+        var playerTwoPosX = canvas.width - 35; //playerOne position X (canvas width - (margin(20) + playerWidth))
+        var playerTwoPosY = 20; //playerOne position Y
+        var playerMove = 15;
+        var oneGoDown = false; //move flag
+        var oneGoUp = false;   //move flag
+        var twoGoDown = false; //move flag
+        var twoGoUp = false;   //move flag
+        ctx.fillStyle = 'white';
+        ctx.fillRect(ctxPosX,ctxPosY,rectW,rectH);  
+        
+        function playerOne(){
+                if(oneGoUp && playerOnePosY >= 20) {
+                    playerOnePosY = playerOnePosY -= playerMove;
+                }
+                if(oneGoDown && playerOnePosY <= canvas.height - 90) {
+                    playerOnePosY = playerOnePosY += playerMove;
+                }
+            ctx.fillRect(playerOnePosX,playerOnePosY,15,70);
+        };
+        
+        function playerTwo(){
+                if(twoGoUp && playerTwoPosY >= 20) {
+                    playerTwoPosY = playerTwoPosY -= playerMove;
+                }
+                if(twoGoDown && playerTwoPosY <= canvas.height - 90) {
+                    playerTwoPosY = playerTwoPosY += playerMove;
+                }
+            ctx.fillRect(playerTwoPosX,playerTwoPosY,15,70);
+        };
+        
+        function go(){
+            ctxPosX += posX;
+            ctxPosY += posY;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillRect(ctxPosX,ctxPosY,rectW,rectH);
+            
+            if(ctxPosY >= canvas.height - rectH) {
+                posY = posY * (-1);
+            }
+            if(ctxPosX <= 0 || ctxPosX >= canvas.width) {
+                    window.location.reload(); 
+            }
+            if(ctxPosY <= 0) {
+                posY = 7;
+            }
+            if(ctxPosX <= playerOnePosX+15 && ctxPosY >= playerOnePosY && ctxPosY <= playerOnePosY+70) {
+                posX = posX * (-1);
+                ctxPosX = playerOnePosX+16;
+            }
+            if(ctxPosX >= playerTwoPosX-15 && ctxPosY >= playerTwoPosY && ctxPosY <= playerTwoPosY+70) {
+                posX = posX * (-1);
+                ctxPosX = playerTwoPosX-20;
+            }
+        };
+        
+        document.addEventListener('keydown', function(e){
+            if(e.which === 87) {
+                oneGoUp = true;
+            }
+            if(e.which === 83) {
+                oneGoDown = true;
+            }
+            if(e.which === 38) {
+                twoGoUp = true;
+            }
+            if(e.which === 40) {
+                twoGoDown = true;
+            }
+        })
+        
+         document.addEventListener('keyup', function(e){
+            if(e.which === 87) {
+                oneGoUp = false;
+
+            }
+            if(e.which === 83) {
+                oneGoDown = false;
+            }
+            if(e.which === 38) {
+                twoGoUp = false;
+
+            }
+            if(e.which === 40) {
+                twoGoDown = false;
+            }
+        })  
+        
+        function animate(){
+            go();
+            playerOne();
+            playerTwo();
+            window.requestAnimationFrame(animate);
+        };
+        
+        animate();
+        
+    </script>
+    
+    
+</body>
+</html>
